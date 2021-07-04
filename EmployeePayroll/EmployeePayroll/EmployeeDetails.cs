@@ -18,6 +18,6 @@ namespace EmployeePayroll
         public double BasicPay { get; set; }
         public DateTime StartDate { get; set; }
         public string Department { get; set; }
-        public int Salary { get; set; }
+        public double Salary { get; set; }
     }
 }
