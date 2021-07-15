@@ -36,7 +36,7 @@ namespace EmployeePayroll
                             emp.Department = dr.GetString(2);
                             emp.PhoneNumber = dr.GetInt64(3);
                             emp.Address = dr.GetString(4);
-                            emp.BasicPay = dr.GetDouble(5);
+                            emp.Basic_Pay = dr.GetDouble(5);
                             emp.StartDate = dr.GetDateTime(6);
                             Console.WriteLine("{0},{1},{2}",emp.EmployeeName,emp.Gender,emp.Department );
                         }
@@ -51,6 +51,46 @@ namespace EmployeePayroll
                 }
             }
 
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+        public bool AddNewRecord(EmployeeDetails address)
+        {
+            SqlConnection connection = new SqlConnection(connectionstring);
+            try
+            {
+                EmployeeDetails empDetails = new EmployeeDetails();
+                using (connection)
+                {
+                    SqlCommand cmd = new SqlCommand("spAddContacts", connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmployeeName", empDetails.EmployeeName);
+                    cmd.Parameters.AddWithValue("@Basic_Pay", empDetails.Basic_Pay);
+                    cmd.Parameters.AddWithValue("@Gender", empDetails.Gender);
+                    cmd.Parameters.AddWithValue("@StartDate", empDetails.StartDate);
+                    cmd.Parameters.AddWithValue("@Department", empDetails.Department);
+                    cmd.Parameters.AddWithValue("@PhoneNumber", empDetails.PhoneNumber);
+                    cmd.Parameters.AddWithValue("@Address", empDetails.Address);
+                    cmd.Parameters.AddWithValue("@Deductions", empDetails.Deductions);
+                    cmd.Parameters.AddWithValue("@Taxable_Pay", empDetails.Taxable_Pay);
+                    cmd.Parameters.AddWithValue("@Tax", empDetails.Tax);
+                    cmd.Parameters.AddWithValue("@Net_Pay", empDetails.Net_Pay);
+                    connection.Open();
+                    var result = cmd.ExecuteNonQuery();
+                    connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
