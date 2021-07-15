@@ -8,8 +8,10 @@ namespace EmployeePayroll
 {
     class PayrollService
     {
-        readonly string connectionstring = "Data Source=.;Initial Catalog=EmployeePayroll;Integrated Security=True";
-    
+        readonly string connectionstring = "Data Source=.;Initial Catalog=EmpPayrollService;Integrated Security=True";
+        /// <summary>
+        ///  get data from database using SqlConnection and SqlCommand passing sql query.
+        /// </summary>
         public void GetData()
         {
             SqlConnection connection = new SqlConnection(connectionstring);
@@ -18,8 +20,7 @@ namespace EmployeePayroll
                 EmployeeDetails emp = new EmployeeDetails();
                 using (connection)
                 {
-                    string query = @"SELECT EmployeeID,EmployeeName,PhoneNumber,Address,IncomeTax,BasicPay,TaxablePay,Department,Salary
-                                   ,Deduction,NetPay,Gender,StartDate FROM EmployeePayroll";
+                    string query = @"SELECT EmployeeName, Gender, Department, PhoneNumber, Address, Basic_Pay, StartDate FROM EmployeePayroll;";
                     //define the sqlcommand object
                     SqlCommand cmd = new SqlCommand(query, connection);
                     connection.Open();
@@ -30,23 +31,14 @@ namespace EmployeePayroll
                         while (dr.Read())
                         {
 
-                            emp.EmployeeID = dr[0] != null ? dr.GetInt32(0) : 0;
-                            emp.EmployeeName = dr[1] != null ? dr.GetString(1) : "hg";
-                            emp.Address = dr[2] != null ? dr.GetString(1) : "hg";
-                            emp.Phonenumber = dr[3] != null ? dr.GetString(1) : "gh";
-                            emp.Gender = dr[4] != null ? dr.GetString(1) : "xyz";
-                            emp.Deduction = dr.GetDouble(5);
-                            emp.NetPay = dr[6] != null ? dr.GetDouble(0) : 1;
-                            emp.IncomeTax = dr[7] != null ? dr.GetDouble(0) : 1;
-                            emp.TaxablePay = dr[8] != null ? dr.GetDouble(0) : 1;
-                            emp.BasicPay = dr[9] != null ? dr.GetDouble(0) : 1;
-                            emp.StartDate = dr.GetDateTime(10);
-                            emp.Department = dr[11] != null ? dr.GetString(0) : "xyz";
-                            emp.Salary = dr[12] != null ? dr.GetDouble(0) : 0;
-
-                            //display retrieved record
-                            Console.WriteLine("{0},{1},{3},{4}", emp.EmployeeID, emp.EmployeeName, emp.Address, emp.Phonenumber);
-                            Console.WriteLine("\n");
+                            emp.EmployeeName = dr.GetString(0);
+                            emp.Gender = dr.GetString(1);
+                            emp.Department = dr.GetString(2);
+                            emp.PhoneNumber = dr.GetInt64(3);
+                            emp.Address = dr.GetString(4);
+                            emp.BasicPay = dr.GetDouble(5);
+                            emp.StartDate = dr.GetDateTime(6);
+                            Console.WriteLine("{0},{1},{2}",emp.EmployeeName,emp.Gender,emp.Department );
                         }
                     }
                     else
