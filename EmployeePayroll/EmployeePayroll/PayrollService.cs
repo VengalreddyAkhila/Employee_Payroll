@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 
 namespace EmployeePayroll
 {
-    class PayrollService
+    public class PayrollService
     {
         readonly string connectionstring = "Data Source=.;Initial Catalog=EmpPayrollService;Integrated Security=True";
         /// <summary>
@@ -38,7 +38,7 @@ namespace EmployeePayroll
                             emp.Address = dr.GetString(4);
                             emp.Basic_Pay = dr.GetDouble(5);
                             emp.StartDate = dr.GetDateTime(6);
-                            Console.WriteLine("{0},{1},{2}",emp.EmployeeName,emp.Gender,emp.Department );
+                            Console.WriteLine("{0},{1},{2}", emp.EmployeeName, emp.Gender, emp.Department);
                         }
                     }
                     else
@@ -50,7 +50,6 @@ namespace EmployeePayroll
                     connection.Close();
                 }
             }
-
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -60,6 +59,12 @@ namespace EmployeePayroll
                 connection.Close();
             }
         }
+        /// <summary>
+        /// inserting the data to employee payroll
+        /// taking the data from the storedprocedure
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
         public bool AddNewRecord(EmployeeDetails address)
         {
             SqlConnection connection = new SqlConnection(connectionstring);
@@ -68,7 +73,7 @@ namespace EmployeePayroll
                 EmployeeDetails empDetails = new EmployeeDetails();
                 using (connection)
                 {
-                    SqlCommand cmd = new SqlCommand("spAddContacts", connection);
+                    SqlCommand cmd = new SqlCommand(" SpAddEmployeeDetails", connection);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@EmployeeName", empDetails.EmployeeName);
                     cmd.Parameters.AddWithValue("@Basic_Pay", empDetails.Basic_Pay);
@@ -99,6 +104,76 @@ namespace EmployeePayroll
             {
                 connection.Close();
             }
+        }       
+        /// <summary>
+        /// retriew  employee salary from payroll service
+        /// </summary>
+        /// <param name="name"></param>
+        public void RetriewSalary(string name)
+        {
+            SqlConnection connection = new SqlConnection(connectionstring);
+            try
+            {
+                EmployeeDetails empDetails = new EmployeeDetails();
+                using (connection)
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand("spRetrieveSalary", connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmployeeName", name);
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        empDetails.Basic_Pay = dr.GetDouble(0);
+                        Console.WriteLine($"Salary of {name} is : " + empDetails.Basic_Pay);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+        /// <summary>
+        /// updating the salary by employee name in payroll service
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="salary"></param>
+        /// <returns></returns>
+        public bool UpdateSalary(string name, double salary)
+        {
+            SqlConnection connection = new SqlConnection(connectionstring);
+            try
+            {
+                EmployeeDetails empDetails = new EmployeeDetails();
+                using (connection)
+                {
+                    connection.Open();
+                    SqlCommand cmd = new SqlCommand("SpUpdateSalary", connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmployeeName", name);
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        empDetails.Basic_Pay = dr.GetDouble(0);
+                        Console.WriteLine($"Salary of {name} is : " + empDetails.Basic_Pay);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return false;
         }
     }
 }
+        
