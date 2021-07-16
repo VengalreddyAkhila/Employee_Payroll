@@ -24,7 +24,7 @@ namespace EmployeePayroll
             //payroll.AddRecord(empDetails);
             //payroll.AddNewRecord(empDetails);
             payroll.RetriewSalary("Terissa");
-            //payroll.UpdateSalary("Terissa", 20000);
+            payroll.UpdateSalary("Terissa", 20000);
 
         }
        
